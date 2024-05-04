@@ -1,0 +1,24 @@
+[
+{ type: install
+  message: <<EOM
+Two sample nginx configuration files were installed into
+/usr/local/share/examples/mempool-frontend/ :
+
+  - nginx-mempool.map has to be included in http { } section
+  - nginx-mempool.conf has to be included in server { } section
+
+For example:
+
+http {
+
+    include nginx-mempool.map;
+
+    server {
+        listen          3006;
+        include nginx-mempool.conf;
+    }
+
+}
+EOM
+}
+]

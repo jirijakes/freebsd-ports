@@ -1,0 +1,3 @@
+bin/electrs
+%%ETCDIR%%.toml.sample
+etc/rc.d/electrs

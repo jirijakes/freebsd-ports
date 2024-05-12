@@ -1,0 +1,4 @@
+An efficient re-implementation of Electrum Server in Rust.
+The motivation behind this project is to enable a user to self host an
+Electrum server, with required hardware resources not much beyond
+those of a full node.

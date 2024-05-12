@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# PROVIDE: electrs
+# REQUIRE: LOGIN bitcoind
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name=electrs
+rcvar=electrs_enable
+
+start_cmd="electrs_start"
+stop_cmd="electrs_stop"
+status_cmd="electrs_status"
+command="%%PREFIX%%/bin/${name}"
+command_args="--conf %%ETCDIR%%.toml"
+daemon_command="/usr/sbin/daemon"
+pidfile=/var/run/${name}.pid
+procname="${command}"
+
+load_rc_config $name
+
+: ${electrs_enable:="NO"}
+
+: ${electrs_user:="electrs"}
+: ${electrs_group:="electrs"}
+: ${electrs_data_dir:="/var/db/electrs"}
+: ${electrs_config_file:="%%PREFIX%%/etc/electrs.toml"}
+
+: ${electrs_chroot:="${electrs_data_dir}"}
+
+required_files="${electrs_config_file}"
+
+electrs_start()
+{
+  echo "Starting electrs:"
+  cd "${electrs_data_dir}" || return 1
+  ${daemon_command} -o /var/log/electrs.log -u "${electrs_user}" -p "${pidfile}" -f \
+    ${command} ${command_args}
+}
+
+electrs_stop()
+{
+  echo "Stopping electrs:"
+  pid=$(check_pidfile "${pidfile}" "${procname}")
+  if [ -z "${pid}" ]
+  then
+    echo "Electrs is not running"
+    return 1
+  else
+    kill ${pid}
+  fi
+}
+
+electrs_status()
+{
+  local pid
+  pid=$(check_pidfile "${pidfile}" "${procname}")
+  if [ -z "${pid}" ]
+  then
+    echo "Electrs is not running"
+    return 1
+  else
+    echo "Electrs running, pid: ${pid}"
+  fi
+}
+
+
+run_rc_command "$1"
